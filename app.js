@@ -2531,9 +2531,9 @@ const app = {
     
     // 1. Try to find a matching mentor account
     const mentor = state.mentors.find(m => 
-      (m.email && m.email.toLowerCase() === emailInput) || 
-      (m.mentor_id && m.mentor_id.toLowerCase() === emailInput) ||
-      (m.username && m.username.toLowerCase() === emailInput)
+      (m.email && String(m.email).toLowerCase() === emailInput) || 
+      (m.mentor_id && String(m.mentor_id).toLowerCase() === emailInput) ||
+      (m.username && String(m.username).toLowerCase() === emailInput)
     );
     
     // Check fallback default mentor credentials
@@ -2541,9 +2541,9 @@ const app = {
     
     // 2. Try to find a matching student account
     const student = state.students.find(s => 
-      (s.email && s.email.toLowerCase() === emailInput) || 
-      (s.student_id && s.student_id.toLowerCase() === emailInput) ||
-      (s.username && s.username.toLowerCase() === emailInput)
+      (s.email && String(s.email).toLowerCase() === emailInput) || 
+      (s.student_id && String(s.student_id).toLowerCase() === emailInput) ||
+      (s.username && String(s.username).toLowerCase() === emailInput)
     );
 
     // 3. Process Mentor Login
@@ -2574,7 +2574,7 @@ const app = {
     // 4. Process Student Login
     if (student) {
       const correctPassword = student.password || 'student123';
-      const isPasswordValid = (passwordInput === correctPassword || passwordInput.toLowerCase() === student.student_id.toLowerCase());
+      const isPasswordValid = (passwordInput === correctPassword || passwordInput.toLowerCase() === String(student.student_id).toLowerCase());
       
       if (isPasswordValid) {
         if (student.status === 'Suspended') {

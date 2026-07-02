@@ -68,9 +68,8 @@ const app = {
           const student = state.students.find(s => s.student_id === session);
           if (student) {
             if (student.status === 'Suspended') {
-              localStorage.removeItem('ag_lms_session');
-              this.showToast('Your account has been suspended.', 'error');
-              this.showLoginScreen(true);
+              this.handleSuspensionLogout();
+              return;
             } else {
               const initials = student.name.substring(0, 2);
               this.updateProfileUI(student.name, 'Learner', initials);
@@ -159,6 +158,15 @@ const app = {
         state.attendance = json.data.attendance || [];
         state.resources = json.data.resources || [];
         this.showToast('Synced with Google Sheets!', 'success');
+
+        // Check if the current user got suspended
+        if (state.isAuthenticated && state.currentRole !== 'mentor') {
+          const currentStudent = state.students.find(s => s.student_id === state.currentRole);
+          if (currentStudent && currentStudent.status === 'Suspended') {
+            this.handleSuspensionLogout();
+            return;
+          }
+        }
         
         // Diagnostic Log
         if (state.assignments.length > 0) {
@@ -2483,7 +2491,7 @@ const app = {
 
       // If the currently logged-in student is suspended, log them out if active
       if (newStatus === 'Suspended' && state.currentRole === studentId) {
-        this.handleLogout();
+        this.handleSuspensionLogout();
       }
 
     } catch (err) {
@@ -2539,7 +2547,8 @@ const app = {
     
     if (isMentor) {
       if (mentorStatus === 'Suspended') {
-        this.showToast('Login failed: Your account has been suspended.', 'error');
+        this.showToast('Login failed: Your account has been suspended. Please contact the administrator.', 'error');
+        alert('Your account has been suspended. Please contact the administrator.');
         return;
       }
       state.isAuthenticated = true;
@@ -2567,7 +2576,8 @@ const app = {
       
       if (isPasswordValid) {
         if (student.status === 'Suspended') {
-          this.showToast('Login failed: Your account has been suspended.', 'error');
+          this.showToast('Login failed: Your account has been suspended. Please contact the administrator.', 'error');
+          alert('Your account has been suspended. Please contact the administrator.');
           return;
         }
         
@@ -2594,6 +2604,15 @@ const app = {
     state.currentRole = 'mentor'; // default
     this.showLoginScreen(true);
     this.showToast('Logged out successfully.', 'info');
+  },
+
+  handleSuspensionLogout() {
+    localStorage.removeItem('ag_lms_session');
+    state.isAuthenticated = false;
+    state.currentRole = 'mentor';
+    this.showLoginScreen(true);
+    alert('Your account has been suspended. Please contact the administrator.');
+    this.showToast('Your account has been suspended. Please contact the administrator.', 'error');
   }
 };
 

@@ -159,6 +159,14 @@ const app = {
         state.attendance = json.data.attendance || [];
         state.resources = json.data.resources || [];
         this.showToast('Synced with Google Sheets!', 'success');
+        
+        // Diagnostic Log
+        if (state.assignments.length > 0) {
+          console.log("LMS Sync Successful. Assignments keys returned from Google Sheets:", Object.keys(state.assignments[0]));
+          console.log("Sample assignment data:", state.assignments[0]);
+        } else {
+          console.log("LMS Sync Successful. No assignments found in database.");
+        }
       } else {
         throw new Error(json.error || 'Unknown API error');
       }
@@ -1163,6 +1171,7 @@ const app = {
     
     // Set checkbox
     const allowLate = String(task.allow_late_submissions).toLowerCase() === 'true';
+    console.log(`Edit Modal: Task allow_late_submissions raw value from sheet is [${task.allow_late_submissions}]. Setting checkbox to:`, allowLate);
     document.getElementById('edit-assign-allow-late').checked = allowLate;
 
     // Format deadline for datetime-local input (YYYY-MM-DDTHH:mm)
@@ -1203,12 +1212,16 @@ const app = {
         assignment_id: assignmentId,
         ...updatedFields
       };
+      console.log("Sending Edit Assignment payload to Google Sheets:", payload);
+      
       const response = await fetch(state.apiUrl, {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: { 'Content-Type': 'text/plain' }
       });
       const json = await response.json();
+      console.log("Edit Assignment response from Google Sheets:", json);
+      
       if (!json.success) throw new Error(json.error);
       this.showToast('Assignment updated in Google Sheets!', 'success');
 

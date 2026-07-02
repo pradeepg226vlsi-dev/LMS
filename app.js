@@ -2004,7 +2004,7 @@ const app = {
     }
   },
 
-  // Action: Submit assignment (Student flow)
+  // Action: Submit assignment (Student flow with autograder integration)
   async handleStudentSubmit() {
     const studentId = state.currentRole;
     const assignmentId = document.getElementById('submit-assignment-id-ref').value;
@@ -2025,28 +2025,57 @@ const app = {
     
     const submitBtn = document.getElementById('submit-student-file-btn');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting Commit Hash...';
+    submitBtn.textContent = 'Triggering Autograder...';
 
-    const payload = {
+    // 1. Submit placeholder to Google Sheets with status 'Processing Code...'
+    const dbPayload = {
       action: 'submitAssignment',
       assignment_id: assignmentId,
       student_id: studentId,
       repo_link: repo,
       commit_hash: commit,
-      commit_url: commitUrl
+      commit_url: commitUrl,
+      status: 'Processing Code...' // Special autograding state
     };
 
     try {
+      this.showToast('Submitting code details to database...', 'info');
       const response = await fetch(state.apiUrl, {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(dbPayload),
         headers: { 'Content-Type': 'text/plain' }
       });
-      const json = await response.json();
-      if (!json.success) throw new Error(json.error);
+      const dbJson = await response.json();
+      if (!dbJson.success) throw new Error(dbJson.error);
       
-      this.showToast('Code version submitted successfully to Google Sheets database!', 'success');
-      
+      this.showToast('Code registered. Triggering Hugging Face Autograder...', 'info');
+
+      // 2. Dispatch to Hugging Face Autograder Space
+      const hfAutograderUrl = "https://vlsi-autograder-antigravity-lms-grader.hf.space/grade-commit";
+      const autograderPayload = {
+        student_id: studentId,
+        repo_url: repo,
+        commit_hash: commit,
+        apps_script_url: state.apiUrl
+      };
+
+      // Fire and forget or background fetch request
+      fetch(hfAutograderUrl, {
+        method: 'POST',
+        body: JSON.stringify(autograderPayload),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(async (res) => {
+        const result = await res.json();
+        console.log("Autograder background run initialized:", result);
+        this.showToast("Autograder is evaluating your Verilog modules! Status will update shortly.", "success");
+      })
+      .catch((err) => {
+        console.error("Autograder trigger error:", err);
+        this.showToast("Autograder connection error. Verification is running in background.", "warning");
+      });
+
+      // 3. UI feedback and redirect immediately
       await this.syncData();
       this.showView('student-assignments');
       

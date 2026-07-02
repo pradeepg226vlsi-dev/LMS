@@ -922,6 +922,11 @@ function setupDatabase() {
  * Implement LockService to prevent write collisions.
  */
 function autogradingCallback(ss, params) {
+  if (!ss) ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!params) {
+    Logger.log("Manually run from editor: No parameters provided.");
+    return "This function is triggered automatically by the autograder.";
+  }
   var lock = LockService.getScriptLock();
   try {
     // Acquire a lock that waits up to 30 seconds before failing

@@ -322,7 +322,7 @@ function getInitialData(ss) {
   var studentsSheet    = getOrCreateSheet(ss, "Students",    ['student_id', 'name', 'email', 'github_username', 'status', 'username', 'password']);
   var mentorsSheet     = getOrCreateSheet(ss, "Mentors",     ['mentor_id', 'name', 'email', 'status', 'username', 'password']);
   var assignmentsSheet = getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'instructions', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
-  var submissionsSheet = getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback']);
+  var submissionsSheet = getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback', 'student_comments']);
   var attendanceSheet  = getOrCreateSheet(ss, "Attendance",  ['student_id', 'date', 'status']);
   var resourcesSheet   = getOrCreateSheet(ss, "Resources",   ['resource_id', 'title', 'type', 'url', 'created_date', 'shared_by']);
 
@@ -425,7 +425,7 @@ function getAssignments(ss) {
  * Returns submissions list.
  */
 function getSubmissions(ss) {
-  var sheet = getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback']);
+  var sheet = getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback', 'student_comments']);
   return getSheetDataAsObjects(sheet);
 }
 
@@ -493,7 +493,7 @@ function createAssignment(ss, params) {
  * Action: submitAssignment
  */
 function submitAssignment(ss, params) {
-  var submissionsSheet = getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback']);
+  var submissionsSheet = getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback', 'student_comments']);
   var studentsSheet = getOrCreateSheet(ss, "Students", ['student_id', 'name', 'email', 'github_username', 'status', 'username', 'password']);
   
   var assignmentId = params.assignment_id;
@@ -538,10 +538,11 @@ function submitAssignment(ss, params) {
     submitted_time: new Date().toISOString(),
     status: params.status || "Submitted",
     marks: "",       // Reset marks for review
-    feedback: ""     // Reset feedback
+    feedback: "",     // Reset feedback
+    student_comments: params.student_comments || ""
   };
   
-  var headers = ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback'];
+  var headers = ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback', 'student_comments'];
   
   if (existingSubmission) {
     updateRowInSheet(submissionsSheet, headers, "submission_id", existingSubmission.submission_id, submissionData);
@@ -580,7 +581,7 @@ function reviewSubmission(ss, params) {
     throw new Error("Missing parameter: submission_id is required.");
   }
   
-  var submissionHeaders = ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback'];
+  var submissionHeaders = ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback', 'student_comments'];
   
   // Update submission status in main Submissions sheet
   var ok = updateRowInSheet(submissionsSheet, submissionHeaders, "submission_id", submissionId, {
@@ -901,7 +902,7 @@ function setupDatabase() {
   getOrCreateSheet(ss, "Students",    ['student_id', 'name', 'email', 'github_username', 'status', 'username', 'password']);
   getOrCreateSheet(ss, "Mentors",     ['mentor_id', 'name', 'email', 'status', 'username', 'password']);
   getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'instructions', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
-  getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback']);
+  getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback', 'student_comments']);
   getOrCreateSheet(ss, "Attendance",  ['student_id', 'date', 'status']);
   getOrCreateSheet(ss, "Resources",   ['resource_id', 'title', 'type', 'url', 'created_date', 'shared_by']);
   getOrCreateSheet(ss, "Logs",        ['log_id', 'timestamp', 'action', 'user_id', 'details']);

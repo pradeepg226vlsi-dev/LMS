@@ -1982,12 +1982,13 @@ const app = {
       document.getElementById('submit-repo').value = sub.repo_link || '';
       document.getElementById('submit-commit').value = sub.commit_hash || '';
       document.getElementById('submit-commit-url').value = sub.commit_url || '';
+      document.getElementById('submit-comments').value = sub.student_comments || '';
     } else {
       document.getElementById('student-submission-form').reset();
     }
 
     // Lock form inputs and submit button in view-only mode
-    const inputs = ['submit-repo', 'submit-commit', 'submit-commit-url'];
+    const inputs = ['submit-repo', 'submit-commit', 'submit-commit-url', 'submit-comments'];
     const submitBtn = document.getElementById('submit-student-file-btn');
     if (isViewOnly) {
       inputs.forEach(id => { const el = document.getElementById(id); if (el) el.setAttribute('readonly', 'true'); });
@@ -2022,6 +2023,7 @@ const app = {
     const repo = document.getElementById('submit-repo').value;
     const commit = document.getElementById('submit-commit').value;
     const commitUrl = document.getElementById('submit-commit-url').value;
+    const comments = document.getElementById('submit-comments').value;
     
     const submitBtn = document.getElementById('submit-student-file-btn');
     submitBtn.disabled = true;
@@ -2035,6 +2037,7 @@ const app = {
       repo_link: repo,
       commit_hash: commit,
       commit_url: commitUrl,
+      student_comments: comments,
       status: 'Processing Code...' // Special autograding state
     };
 
@@ -2056,7 +2059,8 @@ const app = {
         student_id: studentId,
         repo_url: repo,
         commit_hash: commit,
-        apps_script_url: state.apiUrl
+        apps_script_url: state.apiUrl,
+        student_comments: comments
       };
 
       // Fire and forget or background fetch request

@@ -2522,55 +2522,50 @@ const app = {
     const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
     const passwordInput = document.getElementById('login-password').value;
     
-    // Check Mentor dynamically from Google Sheets
+    // 1. Try to find a matching mentor account
     const mentor = state.mentors.find(m => 
       (m.email && m.email.toLowerCase() === emailInput) || 
       (m.mentor_id && m.mentor_id.toLowerCase() === emailInput) ||
       (m.username && m.username.toLowerCase() === emailInput)
     );
     
-    // Check if the credentials match any mentor in Google Sheets, or fallback to the default mentor
-    let isMentor = false;
-    let mentorName = 'Mentor';
-    let mentorStatus = 'Active';
+    // Check fallback default mentor credentials
+    const isDefaultMentor = (emailInput === 'mentor@suretrust.org' || emailInput === 'mentor');
     
-    if (mentor) {
-      const correctPassword = mentor.password || 'mentor123';
-      if (passwordInput === correctPassword) {
-        isMentor = true;
-        mentorName = mentor.name || 'Mentor';
-        mentorStatus = mentor.status || 'Active';
-      }
-    } else if ((emailInput === 'mentor@suretrust.org' || emailInput === 'mentor') && passwordInput === 'mentor123') {
-      isMentor = true;
-    }
-    
-    if (isMentor) {
-      if (mentorStatus === 'Suspended') {
-        this.showToast('Login failed: Your account has been suspended. Please contact the administrator.', 'error');
-        alert('Your account has been suspended. Please contact the administrator.');
-        return;
-      }
-      state.isAuthenticated = true;
-      state.currentRole = 'mentor';
-      localStorage.setItem('ag_lms_session', 'mentor');
-      this.updateProfileUI(mentorName, 'Instructor');
-      this.switchRole('mentor');
-      this.showLoginScreen(false);
-      document.getElementById('login-form').reset();
-      this.showToast(`Logged in as ${mentorName}`, 'success');
-      return;
-    }
-    
-    // Check Student by email, student_id, or username
+    // 2. Try to find a matching student account
     const student = state.students.find(s => 
       (s.email && s.email.toLowerCase() === emailInput) || 
       (s.student_id && s.student_id.toLowerCase() === emailInput) ||
       (s.username && s.username.toLowerCase() === emailInput)
     );
+
+    // 3. Process Mentor Login
+    if (mentor || isDefaultMentor) {
+      const correctPassword = mentor ? (mentor.password || 'mentor123') : 'mentor123';
+      if (passwordInput === correctPassword) {
+        const mentorStatus = mentor ? (mentor.status || 'Active') : 'Active';
+        if (mentorStatus === 'Suspended') {
+          this.showToast('Login failed: Your account has been suspended. Please contact the administrator.', 'error');
+          alert('Your account has been suspended. Please contact the administrator.');
+          return;
+        }
+        state.isAuthenticated = true;
+        state.currentRole = 'mentor';
+        localStorage.setItem('ag_lms_session', 'mentor');
+        this.updateProfileUI(mentor ? (mentor.name || 'Mentor') : 'Mentor Admin', 'Instructor');
+        this.switchRole('mentor');
+        this.showLoginScreen(false);
+        document.getElementById('login-form').reset();
+        this.showToast(`Logged in as ${mentor ? (mentor.name || 'Mentor') : 'Mentor Admin'}`, 'success');
+        return;
+      } else {
+        this.showToast('Login failed: Password was incorrect. Please try again.', 'error');
+        return;
+      }
+    }
     
+    // 4. Process Student Login
     if (student) {
-      // Validate password (fetch password from Google Sheet, default fallback: 'student123' or student_id)
       const correctPassword = student.password || 'student123';
       const isPasswordValid = (passwordInput === correctPassword || passwordInput.toLowerCase() === student.student_id.toLowerCase());
       
@@ -2592,10 +2587,14 @@ const app = {
         document.getElementById('login-form').reset();
         this.showToast(`Welcome back, ${student.name}!`, 'success');
         return;
+      } else {
+        this.showToast('Login failed: Password was incorrect. Please try again.', 'error');
+        return;
       }
     }
     
-    this.showToast('Login failed: Invalid username/email/ID or password.', 'error');
+    // 5. Account not found at all
+    this.showToast('Login failed: User account not found.', 'error');
   },
 
   handleLogout() {

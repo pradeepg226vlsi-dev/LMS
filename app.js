@@ -1162,7 +1162,7 @@ const app = {
     document.getElementById('edit-assign-drive-url').value = task.drive_file_url || '';
     
     // Set checkbox
-    const allowLate = task.allow_late_submissions === 'true' || task.allow_late_submissions === true;
+    const allowLate = String(task.allow_late_submissions).toLowerCase() === 'true';
     document.getElementById('edit-assign-allow-late').checked = allowLate;
 
     // Format deadline for datetime-local input (YYYY-MM-DDTHH:mm)
@@ -1799,7 +1799,7 @@ const app = {
       let isReviewed = false;
 
       const isDeadlinePassed = new Date() > new Date(task.deadline);
-      const isLateAllowed = (task.allow_late_submissions === 'true' || task.allow_late_submissions === true);
+      const isLateAllowed = String(task.allow_late_submissions).toLowerCase() === 'true';
       
       if (sub) {
         if (sub.status === 'Submitted') {
@@ -1911,7 +1911,7 @@ const app = {
     if (!task) return;
 
     const isDeadlinePassed = new Date() > new Date(task.deadline);
-    const isLateAllowed = (task.allow_late_submissions === 'true' || task.allow_late_submissions === true);
+    const isLateAllowed = String(task.allow_late_submissions).toLowerCase() === 'true';
 
     if (task.status === 'Closed' || (isDeadlinePassed && !isLateAllowed)) {
       this.showToast('This assignment is closed or the deadline has passed. Submissions are no longer accepted.', 'warning');
@@ -1941,7 +1941,7 @@ const app = {
     if (!task) return;
 
     const isDeadlinePassed = new Date() > new Date(task.deadline);
-    const isLateAllowed = (task.allow_late_submissions === 'true' || task.allow_late_submissions === true);
+    const isLateAllowed = String(task.allow_late_submissions).toLowerCase() === 'true';
 
     if (task.status === 'Closed' || (isDeadlinePassed && !isLateAllowed)) {
       this.showToast('Submissions are locked for this assignment.', 'error');

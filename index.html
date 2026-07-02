@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sure Trust LMS | Assignment Hub</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Login Page Container -->
+  <div id="login-container" style="display: flex;">
+    <div class="login-card">
+      <div class="login-header">
+        <img src="sure_trust_official_logo.jpg" alt="Sure Trust Logo" class="login-logo">
+        <h2>Welcome Back</h2>
+        <p>Login to access your Sure Trust LMS account</p>
+      </div>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address or Student ID</label>
+          <input class="form-input" type="text" id="login-email" placeholder="e.g. adithya.vlsi@suretrust.org or S1001" required autocomplete="username">
+        </div>
+        
+        <div class="form-group" style="margin-top: 1rem;">
+          <label class="form-label" for="login-password">Password</label>
+          <input class="form-input" type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        
+        <button type="submit" class="btn btn-primary login-btn" style="margin-top: 1.5rem; width: 100%; height: 42px;">
+          Log In
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="app-container" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="sure_trust_official_logo.jpg" alt="Sure Trust Logo" class="brand-logo">
+        <div class="brand-info">
+          <div class="brand-text">Sure Trust LMS</div>
+          <div class="brand-subtitle">G2-26 Integrated VLSI</div>
+        </div>
+      </div>
+      
+      <!-- Mentor Navigation -->
+      <div id="nav-mentor-section">
+        <div class="nav-section-title">Mentor Controls</div>
+        <ul class="sidebar-nav">
+          <li class="nav-item active" data-view="mentor-dashboard">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="mentor-create-assignment">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+              <span>Create Assignment</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="mentor-assignments">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.06 15.94 0 13.36 0c-1.42 0-2.67.6-3.56 1.55L9 3l-.8-.45C7.31.6 6.06 0 4.64 0 2.06 0 0 2.06 0 4.64c0 .48.11.92.18 1.36H-1v2h21v-2zm-9.22 0L9 3.93 7.22 6H4.64C4.47 6 4.18 5.97 3.87 5.84L8.72 2.5C9.04 2.2 9.48 2 10 2h4c.52 0 .96.2 1.28.5l4.85 3.34c-.31.13-.6.16-.77.16H10.78zM4 8v12h16V8H4zm14 10H6v-8h12v8z"/></svg>
+              <span>Assignment Manager</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="mentor-submissions-tracker">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+              <span>Submissions</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="mentor-resources">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+              <span>Shared Resources</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="mentor-students">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 8 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              <span>Student Manager</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="mentor-attendance">
+            <a href="#">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+              <span>Punch Attendance</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Student Navigation -->
+      <div id="nav-student-section" style="display: none;">
+        <div class="nav-section-title">Learner Portal</div>
+        <ul class="sidebar-nav">
+          <li class="nav-item" data-view="student-dashboard">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="student-assignments">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              <span>My Assignments</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="student-performance">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
+              <span>Performance</span>
+            </a>
+          </li>
+          <li class="nav-item" data-view="student-resources">
+            <a href="#">
+              <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+              <span>Resource Center</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- Profile Info & Logout Footer -->
+      <div class="sidebar-footer">
+        <div class="profile-container">
+          <div class="profile-info">
+            <div class="profile-avatar" id="sidebar-user-avatar">-</div>
+            <div class="profile-text">
+              <div class="profile-name" id="sidebar-user-name">Loading...</div>
+              <div class="profile-role" id="sidebar-user-role">-</div>
+            </div>
+          </div>
+          <button class="btn btn-secondary logout-btn" id="logout-btn" style="width: 100%; margin-top: 0.75rem; font-size: 0.8rem; height: 35px; border-color: rgba(239, 68, 68, 0.2); color: var(--color-danger); background: rgba(239, 68, 68, 0.05);">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right: 0.35rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
+            Log Out
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Sticky Header -->
+      <header class="top-header">
+        <div class="header-title-section">
+          <h1 id="page-title">Mentor Dashboard</h1>
+        </div>
+        <div class="header-actions">
+          <div id="connection-status-pill" class="status-pill connected">
+            <div class="status-dot"></div>
+            <span id="connection-status-text">Live Sheets Connected</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="content-wrapper">
+        
+        <!-- ========================================================= -->
+        <!-- MENTOR VIEWS -->
+        <!-- ========================================================= -->
+        
+        <!-- Mentor Dashboard -->
+        <section id="view-mentor-dashboard" class="view-section active">
+          <div class="stats-grid">
+            <div class="stat-card" id="mentor-card-active" role="button" tabindex="0" aria-label="View all active assignments">
+              <div class="stat-header">
+                <span>Active Assignments</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+              </div>
+              <div class="stat-value" id="mentor-stat-active-assignments">0</div>
+              <div class="stat-desc">Assignments open for submission (Click to view)</div>
+            </div>
+            <div class="stat-card" id="mentor-card-pending" role="button" tabindex="0" aria-label="View pending submissions awaiting review">
+              <div class="stat-header">
+                <span>Awaiting Review</span>
+                <div class="stat-icon warning"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+              </div>
+              <div class="stat-value" id="mentor-stat-pending-reviews">0</div>
+              <div class="stat-desc">Unreviewed student files (Click to evaluate)</div>
+            </div>
+            <div class="stat-card" id="mentor-card-average" role="button" tabindex="0" aria-label="View graded submissions history">
+              <div class="stat-header">
+                <span>Class Average</span>
+                <div class="stat-icon"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
+              </div>
+              <div class="stat-value" id="mentor-stat-average-grade">-</div>
+              <div class="stat-desc">Based on evaluated marks (Click to view grades)</div>
+            </div>
+          </div>
+
+          <!-- Recent Submissions Preview Panel -->
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">Recent Submissions Waiting Review</h2>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Assignment</th>
+                    <th>Submitted Time</th>
+                    <th>GitHub Repository</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="mentor-dashboard-pending-table">
+                  <!-- JS filled -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mentor Create Assignment -->
+        <section id="view-mentor-create-assignment" class="view-section">
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">Create New Assignment</h2>
+            </div>
+            
+            <form id="create-assignment-form" class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="assign-title">Assignment Title *</label>
+                <input class="form-input" type="text" id="assign-title" placeholder="e.g. Intermediate React and State Sync" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="assign-subject">Subject *</label>
+                <input class="form-input" type="text" id="assign-subject" placeholder="e.g. Frontend Engineering" required>
+              </div>
+
+              <div class="form-group-full form-group">
+                <label class="form-label" for="assign-desc">Description (Visible to Mentor & Students) *</label>
+                <textarea class="form-textarea" id="assign-desc" placeholder="Brief summary of the assignment for card previews..." required></textarea>
+              </div>
+
+              <div class="form-group-full form-group">
+                <label class="form-label" for="assign-instructions">Student Instructions (Only visible to students)</label>
+                <textarea class="form-textarea" id="assign-instructions" placeholder="Step-by-step instructions for students to complete this assignment..." style="min-height: 120px;"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="assign-deadline">Deadline Date & Time *</label>
+                <input class="form-input" type="datetime-local" id="assign-deadline" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="assign-status">Initial Status</label>
+                <select class="form-select" id="assign-status">
+                  <option value="Active">Active (Available immediately)</option>
+                  <option value="Draft">Draft (Hidden from students)</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; margin-top: 1.7rem;">
+                <input type="checkbox" id="assign-allow-late" style="width: 1.2rem; height: 1.2rem; cursor: pointer;" checked>
+                <label class="form-label" for="assign-allow-late" style="margin-bottom: 0; cursor: pointer;">Allow Late Submissions</label>
+              </div>
+
+              <!-- Upload to Drive -->
+              <div class="form-group form-group-full">
+                <label class="form-label">Upload Assignment File to Google Drive (PDF, ZIP, DOCX)</label>
+                <div class="file-upload-dropzone" id="drive-upload-dropzone">
+                  <input type="file" id="assign-file-input" class="file-upload-input">
+                  <div class="dropzone-text">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
+                    <span id="upload-status-text">Click or drag a file to upload directly to Drive folder</span>
+                    <span style="font-size: 0.75rem; opacity: 0.7;" id="uploaded-filename">No file selected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group form-group-full">
+                <label class="form-label" for="assign-drive-url">OR: Paste existing Google Drive URL (If already uploaded)</label>
+                <input class="form-input" type="url" id="assign-drive-url" placeholder="https://drive.google.com/file/d/...">
+              </div>
+
+              <div class="form-group-full" style="text-align: right; padding-top: 1rem;">
+                <button type="submit" class="btn btn-primary" id="submit-assignment-btn">Publish Assignment</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- Mentor Assignment Manager -->
+        <section id="view-mentor-assignments" class="view-section">
+          <!-- Status Summary Pills -->
+          <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <div style="background: rgba(83,155,245,0.1); border: 1px solid rgba(83,155,245,0.25); border-radius: 10px; padding: 0.75rem 1.25rem; flex: 1; min-width: 140px; text-align: center;">
+              <div style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: var(--color-primary); margin-bottom: 0.3rem;">Active</div>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #ffffff;" id="mgr-count-active">0</div>
+              <div style="font-size: 0.72rem; color: var(--text-secondary);">Open for submissions</div>
+            </div>
+            <div style="background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 0.75rem 1.25rem; flex: 1; min-width: 140px; text-align: center;">
+              <div style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: var(--color-warning); margin-bottom: 0.3rem;">Draft</div>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #ffffff;" id="mgr-count-draft">0</div>
+              <div style="font-size: 0.72rem; color: var(--text-secondary);">Hidden from students</div>
+            </div>
+            <div style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 0.75rem 1.25rem; flex: 1; min-width: 140px; text-align: center;">
+              <div style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: var(--color-danger); margin-bottom: 0.3rem;">Closed</div>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #ffffff;" id="mgr-count-closed">0</div>
+              <div style="font-size: 0.72rem; color: var(--text-secondary);">Submissions locked</div>
+            </div>
+          </div>
+
+          <!-- Legend -->
+          <div class="section-panel" style="margin-bottom: 1rem; padding: 0.75rem 1rem; background: rgba(83,155,245,0.04); border: 1px solid rgba(83,155,245,0.1);">
+            <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.76rem; color: var(--text-secondary);">
+              <span>🟢 <strong style="color: var(--color-primary);">Active</strong> — Visible to students, submissions open</span>
+              <span>🟡 <strong style="color: var(--color-warning);">Draft</strong> — Hidden from students, only you can see it</span>
+              <span>🔴 <strong style="color: var(--color-danger);">Closed</strong> — Visible to students as locked, no new submissions</span>
+            </div>
+          </div>
+
+          <!-- Assignment Table -->
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">All Assignments</h2>
+              <button class="btn btn-primary" style="font-size: 0.82rem; padding: 0.4rem 0.9rem;" onclick="app.showView('mentor-create-assignment')">
+                <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.3rem;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                New Assignment
+              </button>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th>Deadline</th>
+                    <th>Submissions</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="assignment-manager-table-body">
+                  <!-- JS filled -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mentor Submissions Tracker -->
+        <section id="view-mentor-submissions-tracker" class="view-section">
+          <!-- 1. Assignment Cards Grid View -->
+          <div id="mentor-submissions-grid-view">
+            <div class="section-panel" style="margin-bottom: 1.5rem;">
+              <div class="section-panel-header">
+                <h2 class="section-panel-title">Select Assignment to View Submissions</h2>
+                <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                  <input type="text" id="assignment-search-input" class="form-input" placeholder="Search Assignments..." style="max-width: 180px; padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px; background: var(--bg-input); border-color: var(--border-color); color: #ffffff;">
+                  
+                  <input type="date" id="assignment-date-filter" class="form-input" style="max-width: 140px; padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px; background: var(--bg-input); border-color: var(--border-color); color: #ffffff;">
+                  
+                  <select class="form-select" id="submission-filter-status" style="padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px;">
+                    <option value="All">All Assignments</option>
+                    <option value="Submitted">With Awaiting Reviews</option>
+                    <option value="Reviewed">With Completed Reviews</option>
+                    <option value="Recent">Recent Assignments</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div class="stats-grid" id="mentor-assignments-stats-grid">
+              <!-- Dynamically populated with stats-styled assignment cards -->
+            </div>
+          </div>
+
+          <!-- 2. Detailed Submissions Roster View for Selected Assignment -->
+          <div id="mentor-submissions-detail-view" style="display: none;">
+            <div class="section-panel">
+              <div class="section-panel-header" style="border-bottom: none; padding-bottom: 0;">
+                <button class="btn btn-secondary" id="back-to-assignments-btn" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                  <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.3rem;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                  Back to Assignments
+                </button>
+                <span class="card-badge status-active" id="detail-assignment-subject">-</span>
+              </div>
+              
+              <div style="margin-top: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                  <div>
+                    <h2 style="font-size: 1.35rem; font-weight: 800; color: #ffffff;" id="detail-assignment-title">-</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem;" id="detail-assignment-deadline">-</p>
+                    <p style="font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.15rem;" id="detail-assignment-description"></p>
+                  </div>
+                  <button class="btn btn-secondary" id="edit-assignment-btn" style="font-size: 0.78rem; padding: 0.35rem 0.8rem; white-space: nowrap;">
+                    <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.25rem;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    Edit Assignment
+                  </button>
+                </div>
+              </div>
+
+              <!-- Quick stats inside details -->
+              <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                <div style="background-color: var(--bg-card); padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); flex: 1; text-align: center;">
+                  <div style="font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; font-weight:700; letter-spacing: 0.5px;">On-Time Submissions</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: #ffffff;" id="detail-count-ontime">0</div>
+                </div>
+                <div style="background-color: var(--bg-card); padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); flex: 1; text-align: center;">
+                  <div style="font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; font-weight:700; letter-spacing: 0.5px;">Late Submissions</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--color-danger);" id="detail-count-late">0</div>
+                </div>
+                <div style="background-color: var(--bg-card); padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border-color); flex: 1; text-align: center;">
+                  <div style="font-size: 0.65rem; color: var(--text-secondary); text-transform: uppercase; font-weight:700; letter-spacing: 0.5px;">Not Submitted</div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--text-tertiary);" id="detail-count-missing">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Unified Roster List Panel -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem;">
+              <div class="section-panel">
+                <div class="section-panel-header">
+                  <h3 class="section-panel-title" id="detail-table-title" style="font-size: 0.95rem;">Submissions Ledger</h3>
+                  <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                    <input type="text" id="detail-roster-search" class="form-input" placeholder="Search Name or ID..." style="max-width: 160px; padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px; background: var(--bg-input); border-color: var(--border-color); color: #ffffff;">
+                    
+                    <select class="form-select" id="detail-roster-filter" style="padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px;">
+                      <option value="all">All Roster Students</option>
+                      <option value="submitted">Awaiting Review</option>
+                      <option value="awaited">Submission Awaited</option>
+                      <option value="reviewed">Reviewed Submissions</option>
+                      <option value="late">Late Submissions</option>
+                      <option value="resubmit">Re-submissions Requested</option>
+                    </select>
+
+                    <select class="form-select" id="detail-roster-sort" style="padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px;">
+                      <option value="default">Default (ID Order)</option>
+                      <option value="marks-desc">Highest Marks</option>
+                      <option value="marks-asc">Lowest Marks</option>
+                      <option value="name-asc">Student Name (A-Z)</option>
+                      <option value="date-desc">Newest Submission</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="table-wrapper">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Student Name (ID)</th>
+                        <th>Submitted Time</th>
+                        <th>GitHub Repo</th>
+                        <th>Commit SHA</th>
+                        <th>Status</th>
+                        <th>Marks</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="detail-roster-table-body">
+                      <!-- Dynamically populated by JS based on filter choice -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Code Review & Grading Pane -->
+        <section id="view-mentor-code-review" class="view-section">
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">Grading & Code Review Center</h2>
+              <button class="btn btn-secondary" onclick="app.showView('mentor-submissions-tracker')">Back to List</button>
+            </div>
+            
+            <div class="grading-panel">
+              <!-- Left Side: Submission info & quick links -->
+              <div class="submission-details-pane">
+                <div class="section-panel" style="padding: 1.5rem; gap: 1rem;">
+                  <h3 style="font-size: 1.05rem;">Student & Code Details</h3>
+                  <div class="info-row"><span class="info-label">Student Name</span><span class="info-value" id="grade-student-name">-</span></div>
+                  <div class="info-row"><span class="info-label">Assignment ID</span><span class="info-value" id="grade-assignment-id">-</span></div>
+                  <div class="info-row"><span class="info-label">Submitted On</span><span class="info-value" id="grade-submitted-time">-</span></div>
+                  <div class="info-row"><span class="info-label">Repository link</span><span class="info-value"><a href="#" target="_blank" id="grade-repo-link" style="color: var(--color-primary);">Open Repo →</a></span></div>
+                  <div class="info-row"><span class="info-label">Commit SHA</span><span class="info-value" id="grade-commit-hash" style="font-family: monospace; font-size: 0.85rem;">-</span></div>
+                  <div class="info-row" style="border: none;"><span class="info-label">View Commit Changes</span><span class="info-value"><a href="#" target="_blank" id="grade-commit-url" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">GitHub Commit →</a></span></div>
+                </div>
+                
+                <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; background-color: var(--bg-input); padding: 1.25rem; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color);">
+                  <strong style="color: var(--text-primary);">GitHub Integration Note:</strong> Use the "GitHub Commit" button to review the student's exact code changes line-by-line. Google Apps Script stores this code reference in Google Sheets so you can review their repository history asynchronously.
+                </div>
+              </div>
+
+              <!-- Right Side: Mentor Marks and Feedback input -->
+              <div class="grade-actions-pane">
+                <h3 style="font-size: 1.05rem;">Evaluation Details</h3>
+                
+                <input type="hidden" id="grade-submission-id">
+                
+                <div class="form-group">
+                  <label class="form-label" for="grade-marks">Marks (Out of 100) *</label>
+                  <input type="number" id="grade-marks" class="form-input" min="0" max="100" placeholder="e.g. 92" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="grade-status">Result Status</label>
+                  <select id="grade-status" class="form-select">
+                    <option value="Reviewed">Approve / Reviewed</option>
+                    <option value="Resubmission Requested">Request Resubmission / Fixes</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="grade-feedback">Mentor Feedback & Suggestions</label>
+                  <textarea id="grade-feedback" class="form-textarea" placeholder="Provide actionable feedback, point out issues, or praise code styling..."></textarea>
+                </div>
+
+                <button class="btn btn-success" id="submit-grade-btn" style="width: 100%;">Submit Grading & Log Result</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mentor Resource Sharing Manager -->
+        <section id="view-mentor-resources" class="view-section">
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">Share New Learning Resource</h2>
+            </div>
+            
+            <form id="share-resource-form" class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="res-title">Resource Title *</label>
+                <input class="form-input" type="text" id="res-title" placeholder="e.g. CMOS Layout Design Guidelines" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="res-type">Resource Type *</label>
+                <select class="form-select" id="res-type" required>
+                  <option value="PDF">PDF Document</option>
+                  <option value="Video">Video Tutorial</option>
+                  <option value="Photo">Diagram / Photo</option>
+                  <option value="Link">External Link / Web Article</option>
+                  <option value="Document">Other Document Format</option>
+                </select>
+              </div>
+
+              <!-- Upload to Drive -->
+              <div class="form-group form-group-full">
+                <label class="form-label">Upload Resource File to Google Drive (PDF, MP4, ZIP, PNG, etc.)</label>
+                <div class="file-upload-dropzone" id="res-upload-dropzone">
+                  <input type="file" id="res-file-input" class="file-upload-input">
+                  <div class="dropzone-text">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/></svg>
+                    <span id="res-upload-status-text">Click or drag a file to upload directly to Drive folder</span>
+                    <span style="font-size: 0.75rem; opacity: 0.7;" id="res-uploaded-filename">No file selected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group form-group-full">
+                <label class="form-label" for="res-drive-url">OR: Paste Resource Link / Google Drive URL (If already uploaded)</label>
+                <input class="form-input" type="url" id="res-drive-url" placeholder="https://drive.google.com/file/d/... or https://youtube.com/...">
+              </div>
+
+              <div class="form-group-full" style="text-align: right; padding-top: 1rem;">
+                <button type="submit" class="btn btn-primary" id="submit-resource-btn">Share Resource</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Shared Resources List -->
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">All Shared Resources</h2>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>URL</th>
+                    <th>Date Shared</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="mentor-resources-table-body">
+                  <!-- JS filled -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mentor Student Manager -->
+        <section id="view-mentor-students" class="view-section">
+          <div class="section-panel">
+            <div class="section-panel-header" style="border-bottom: none; padding-bottom: 0; flex-wrap: wrap; gap: 1rem;">
+              <h2 class="section-panel-title">Student Account Control</h2>
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="mentor-students-search" class="form-input" placeholder="Search roster..." style="max-width: 200px; padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px; background: var(--bg-input); border-color: var(--border-color); color: #ffffff;">
+              </div>
+            </div>
+          </div>
+
+          <div class="section-panel">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Email Address</th>
+                    <th>GitHub Username</th>
+                    <th>Account Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="mentor-students-table-body">
+                  <!-- JS roster list with Active/Suspended controls -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mentor Punch Attendance -->
+        <section id="view-mentor-attendance" class="view-section">
+          <div class="section-panel" style="margin-bottom: 1rem;">
+            <div class="section-panel-header" style="flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+              <h2 class="section-panel-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                Punch Class Attendance
+              </h2>
+              <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <label class="form-label" for="attendance-class-date" style="margin: 0; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Session Date:</label>
+                <input type="date" id="attendance-class-date" class="form-input" style="width: auto; height: 36px; padding: 0.35rem 0.75rem; font-size: 0.85rem; background: var(--bg-input); border-color: var(--border-color); color: #ffffff;">
+                <button class="btn btn-secondary" id="btn-load-attendance" style="height: 36px; font-size: 0.8rem; padding: 0.4rem 1rem;">Load Logs</button>
+              </div>
+            </div>
+            
+            <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
+              Select the session date and mark students as **Present** or **Absent**. By default, students are set to present. Press **"Save & Punch Attendance"** at the bottom to sync.
+            </p>
+          </div>
+
+          <div class="section-panel">
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Email Address</th>
+                    <th style="width: 200px; text-align: center;">Status Switch</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance-puncher-roster">
+                  <!-- JS filled students roster -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">
+                Punch Summary: <strong id="attendance-punch-summary-present" style="color: var(--color-success);">0</strong> Present, <strong id="attendance-punch-summary-absent" style="color: var(--color-danger);">0</strong> Absent
+              </div>
+              <button class="btn btn-primary" id="btn-save-attendance-punch" style="padding: 0.55rem 1.5rem; font-size: 0.85rem; height: 38px;">
+                Save & Punch Attendance
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mentor views for Logs and Attendance removed (monitored via external Admin Dashboard) -->
+        <!-- ========================================================= -->
+        <!-- STUDENT VIEWS -->
+        <!-- ========================================================= -->
+        
+        <!-- Student Dashboard -->
+        <section id="view-student-dashboard" class="view-section">
+          <div class="stats-grid">
+            <div class="stat-card" role="status" aria-live="polite">
+              <div class="stat-header">
+                <span>Completed Tasks</span>
+                <div class="stat-icon success"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+              </div>
+              <div class="stat-value" id="student-stat-completed">0</div>
+              <div class="stat-desc">Assignments with passing review</div>
+            </div>
+            <div class="stat-card" role="status" aria-live="polite">
+              <div class="stat-header">
+                <span>Pending Review</span>
+                <div class="stat-icon warning"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
+              </div>
+              <div class="stat-value" id="student-stat-pending">0</div>
+              <div class="stat-desc">Waiting for mentor feedback</div>
+            </div>
+            <div class="stat-card" role="status" aria-live="polite">
+              <div class="stat-header">
+                <span>Action Required</span>
+                <div class="stat-icon danger"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+              </div>
+              <div class="stat-value" id="student-stat-todo">0</div>
+              <div class="stat-desc">Unsubmitted or resubmission requested</div>
+            </div>
+            <div class="stat-card" id="student-attendance-card" role="button" aria-label="View Class Attendance Logs" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='var(--shadow-lg)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+              <div class="stat-header">
+                <span>Attendance Rate</span>
+                <div class="stat-icon info" style="color: var(--color-primary); background: rgba(83, 155, 245, 0.12);"><svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div>
+              </div>
+              <div class="stat-value" id="student-stat-attendance">100%</div>
+              <!-- Graphical progress bar -->
+              <div style="width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; margin: 0.5rem 0; overflow: hidden;">
+                <div id="student-attendance-bar" style="width: 100%; height: 100%; background: var(--success-gradient); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+              </div>
+              <div class="stat-desc">Class attendance rate percentage (Click for logs)</div>
+            </div>
+          </div>
+          
+          <div class="dashboard-graphics-row">
+            <!-- Left Card: Cumulative Ring -->
+            <div class="perf-ring-wrapper" style="margin: 0; height: 100%;">
+              <div class="svg-ring-container">
+                <svg width="80" height="80">
+                  <circle class="ring-bg" cx="40" cy="40" r="36"/>
+                  <circle class="ring-fill" id="student-avg-ring" cx="40" cy="40" r="36"/>
+                  <defs>
+                    <linearGradient id="indigoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#4f46e5" />
+                      <stop offset="100%" stop-color="#6366f1" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="ring-text" id="student-avg-percent">0%</div>
+              </div>
+              <div>
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">Cumulative Course Grade</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary);">Your current average score calculated from graded and approved projects.</p>
+              </div>
+            </div>
+
+            <!-- Right Card: Performance Graph -->
+            <div class="section-panel" style="margin: 0; padding: 1.25rem; height: 100%; justify-content: center; overflow: hidden;">
+              <h3 style="font-size: 1rem; color: #ffffff; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="color: var(--color-primary);"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
+                Grade History & Performance
+              </h3>
+              <div style="position: relative; height: 150px; width: 100%;">
+                <canvas id="student-grades-chart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Student My Assignments -->
+        <section id="view-student-assignments" class="view-section">
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">My Assignment Portal</h2>
+            </div>
+
+            <!-- Search, Date, and Status Filter Controls -->
+            <div class="assignment-filter-bar">
+              <!-- Search -->
+              <div class="assignment-filter-search">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="student-assignments-search" class="assignment-filter-input" placeholder="Search by title or subject…">
+              </div>
+
+              <!-- Deadline date -->
+              <div class="assignment-filter-field">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" style="color:var(--text-secondary);flex-shrink:0;"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                <input type="date" id="student-assignments-date" class="assignment-filter-input" title="Filter by deadline date">
+              </div>
+
+              <!-- Status filter -->
+              <div class="assignment-filter-field" style="position:relative;">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" style="color:var(--text-secondary);flex-shrink:0;"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                <select id="student-assignments-status-filter" class="assignment-filter-select">
+                  <option value="All">All Assignments</option>
+                  <option value="Unsubmitted">Unsubmitted</option>
+                  <option value="Submitted">Submitted — Pending Review</option>
+                  <option value="Reviewed">Reviewed &amp; Graded</option>
+                  <option value="Resubmission Requested">Resubmission Requested</option>
+                </select>
+                <svg class="select-chevron" viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M7 10l5 5 5-5z"/></svg>
+              </div>
+            </div>
+            
+            <div class="cards-grid" id="student-assignments-grid">
+              <!-- JS filled -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Student Submit Code panel -->
+        <section id="view-student-submit-pane" class="view-section">
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title" id="submit-panel-title">Submit Code: Assignment Name</h2>
+              <button class="btn btn-secondary" onclick="app.showView('student-assignments')">Cancel</button>
+            </div>
+            
+            <form id="student-submission-form" class="form-grid">
+              <input type="hidden" id="submit-assignment-id-ref">
+              
+              <div class="form-group form-group-full">
+                <label class="form-label" for="submit-repo">GitHub Repository Link *</label>
+                <input type="url" id="submit-repo" class="form-input" placeholder="https://github.com/username/project-repo" required>
+                <span style="font-size: 0.75rem; color: var(--text-tertiary);">Ensure the repository is public or you have granted read access so the mentor can view your work.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="submit-commit">GitHub Commit SHA / Hash *</label>
+                <input type="text" id="submit-commit" class="form-input" placeholder="e.g. 9f41a87e5b15b3e21b8ffc8112c3" minlength="7" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="submit-commit-url">GitHub Commit URL (Optional)</label>
+                <input type="url" id="submit-commit-url" class="form-input" placeholder="https://github.com/username/repo/commit/hash">
+              </div>
+
+              <div class="form-group-full" style="text-align: right; padding-top: 1rem;">
+                <button type="submit" class="btn btn-primary" id="submit-student-file-btn">Submit Code Version</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- Student Performance Summary -->
+        <section id="view-student-performance" class="view-section">
+          <div class="section-panel">
+            <div class="section-panel-header">
+              <h2 class="section-panel-title">Mentor Feedback & Grade Ledger</h2>
+            </div>
+            
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Assignment</th>
+                    <th>Submission Date</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Mentor Feedback Comments</th>
+                  </tr>
+                </thead>
+                <tbody id="student-performance-table-body">
+                  <!-- JS filled -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Student Resource Center -->
+        <section id="view-student-resources" class="view-section">
+          <div class="section-panel" style="margin-bottom: 0.5rem;">
+            <div class="section-panel-header" style="border-bottom: none; padding-bottom: 0; flex-wrap: wrap; gap: 1rem;">
+              <h2 class="section-panel-title">Shared Resource Center</h2>
+              <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <input type="text" id="student-resources-search" class="form-input" placeholder="Search resources..." style="max-width: 180px; padding: 0.4rem 1rem; font-size: 0.85rem; height: 35px; background: var(--bg-input); border-color: var(--border-color); color: #ffffff;">
+                <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;" id="resource-category-tabs">
+                  <button class="btn btn-secondary resource-filter-btn active" data-type="All" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; height: 35px;">All</button>
+                  <button class="btn btn-secondary resource-filter-btn" data-type="PDF" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; height: 35px;">PDFs</button>
+                  <button class="btn btn-secondary resource-filter-btn" data-type="Video" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; height: 35px;">Videos</button>
+                  <button class="btn btn-secondary resource-filter-btn" data-type="Photo" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; height: 35px;">Photos</button>
+                  <button class="btn btn-secondary resource-filter-btn" data-type="Link" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; height: 35px;">Links</button>
+                  <button class="btn btn-secondary resource-filter-btn" data-type="Document" style="font-size: 0.78rem; padding: 0.35rem 0.75rem; height: 35px;">Docs</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="cards-grid" id="student-resources-grid">
+            <!-- JS filled -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+
+
+  <!-- Student Directory Modal Removed (Monitored via external Admin Dashboard) -->
+
+  <!-- Edit Assignment Modal Overlay -->
+  <div class="modal-overlay" id="edit-assignment-modal" style="display: none;">
+    <div class="modal-content" style="max-width: 640px;">
+      <div class="section-panel-header" style="padding-bottom: 1rem;">
+        <h2 class="section-panel-title" style="font-size: 1.1rem;">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.4rem;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          Edit Assignment
+        </h2>
+        <button class="btn btn-secondary" id="close-edit-modal-btn" style="font-size: 0.78rem; padding: 0.3rem 0.7rem;">✕ Close</button>
+      </div>
+      <form id="edit-assignment-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <input type="hidden" id="edit-assign-id">
+        
+        <div class="form-group">
+          <label class="form-label" for="edit-assign-title">Assignment Title *</label>
+          <input class="form-input" type="text" id="edit-assign-title" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-assign-subject">Subject *</label>
+          <input class="form-input" type="text" id="edit-assign-subject" required>
+        </div>
+
+        <div class="form-group" style="grid-column: span 2;">
+          <label class="form-label" for="edit-assign-desc">Description (Visible to Mentor & Students) *</label>
+          <textarea class="form-textarea" id="edit-assign-desc" required></textarea>
+        </div>
+
+        <div class="form-group" style="grid-column: span 2;">
+          <label class="form-label" for="edit-assign-instructions">Student Instructions (Only visible to students)</label>
+          <textarea class="form-textarea" id="edit-assign-instructions" style="min-height: 120px;" placeholder="Step-by-step instructions for students..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-assign-deadline">Deadline Date & Time *</label>
+          <input class="form-input" type="datetime-local" id="edit-assign-deadline" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-assign-status">Status</label>
+          <select class="form-select" id="edit-assign-status">
+            <option value="Active">Active</option>
+            <option value="Draft">Draft</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; margin-top: 1.7rem;">
+          <input type="checkbox" id="edit-assign-allow-late" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
+          <label class="form-label" for="edit-assign-allow-late" style="margin-bottom: 0; cursor: pointer;">Allow Late Submissions</label>
+        </div>
+
+        <div class="form-group" style="grid-column: span 2;">
+          <label class="form-label" for="edit-assign-drive-url">Google Drive Resource URL</label>
+          <input class="form-input" type="url" id="edit-assign-drive-url" placeholder="https://drive.google.com/file/d/...">
+        </div>
+
+        <div style="grid-column: span 2; display: flex; justify-content: space-between; gap: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-danger" id="delete-assign-btn" style="font-size: 0.85rem; background-color: var(--color-danger); border-color: var(--color-danger); color: #ffffff;">Delete Assignment</button>
+          <div style="display: flex; gap: 0.75rem;">
+            <button type="button" class="btn btn-secondary" id="cancel-edit-btn" style="font-size: 0.85rem;">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="save-edit-btn" style="font-size: 0.85rem;">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Student Attendance Logs Modal -->
+  <div class="modal-overlay" id="student-attendance-modal" style="display: none; z-index: 10000;">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h2 style="font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" style="color: var(--color-primary);"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+          Attendance Logs
+        </h2>
+        <button class="modal-close-btn" id="close-attendance-modal-btn">&times;</button>
+      </div>
+      
+      <div style="margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; font-size: 0.85rem;">
+        <span style="color: var(--text-secondary);">Student: <strong id="attendance-modal-student-name" style="color: #ffffff;">-</strong></span>
+        <span style="color: var(--text-secondary);">Rate: <strong id="attendance-modal-rate" style="color: var(--color-success);">-</strong></span>
+      </div>
+
+      <div style="max-height: 380px; overflow-y: auto; padding-right: 0.25rem;" id="attendance-logs-list">
+        <!-- JS populated rows -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Alert Hub -->
+  <div class="toast-container" id="toast-hub"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

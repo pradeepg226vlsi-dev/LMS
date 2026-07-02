@@ -38,22 +38,24 @@ const app = {
       if (session === 'mentor') {
         state.currentRole = 'mentor';
         this.updateProfileUI('Mentor', 'Instructor');
-        this.switchRole('mentor');
         this.showLoginScreen(false);
+        // Show sync loader overlay
+        this.showSyncLoader(true);
         hasValidSession = true;
       } else {
         // Temporary student profile until sync finishes
         state.currentRole = session;
         this.updateProfileUI('Student', 'Learner', 'S');
-        this.switchRole(session);
         this.showLoginScreen(false);
+        // Show sync loader overlay
+        this.showSyncLoader(true);
         hasValidSession = true;
       }
     } else {
       this.showLoginScreen(true);
     }
 
-    // 2. Fetch data in background/async
+    // 2. Fetch data
     try {
       await this.syncData();
       this.populateStudentSelector();
@@ -61,10 +63,8 @@ const app = {
       // 3. Post-sync session check & detail refinement
       if (hasValidSession) {
         if (session === 'mentor') {
-          // Refresh Mentor View
-          this.showView('mentor-dashboard');
+          this.switchRole('mentor');
         } else {
-          // Verify student status
           const student = state.students.find(s => s.student_id === session);
           if (student) {
             if (student.status === 'Suspended') {
@@ -74,22 +74,57 @@ const app = {
             } else {
               const initials = student.name.substring(0, 2);
               this.updateProfileUI(student.name, 'Learner', initials);
-              // Refresh views to display fetched data
               this.switchRole(session);
             }
           } else if (state.students.length > 0) {
-            // Data successfully fetched, but student is NOT in the database (deleted)
             localStorage.removeItem('ag_lms_session');
             this.showToast('Session expired or student profile not found.', 'warning');
             this.showLoginScreen(true);
+          } else {
+            // Sync may have failed, still show basic UI
+            this.switchRole(session);
           }
         }
       }
     } catch (startupError) {
       console.error('LMS Startup Sync Error:', startupError);
+      if (hasValidSession) {
+        // Sync failed but session exists — show empty dashboard anyway
+        if (session === 'mentor') {
+          this.switchRole('mentor');
+        } else {
+          this.switchRole(session);
+        }
+      }
+    } finally {
+      this.showSyncLoader(false);
     }
     
-    this.showToast('LMS Platform initialized successfully!', 'success');
+    this.showToast('LMS Platform ready!', 'success');
+  },
+
+  showSyncLoader(show) {
+    let overlay = document.getElementById('sync-loader-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'sync-loader-overlay';
+      overlay.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(28, 33, 40, 0.75); backdrop-filter: blur(4px);
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; z-index: 9999; gap: 1rem;
+      `;
+      overlay.innerHTML = `
+        <div style="width: 44px; height: 44px; border: 4px solid #373e47;
+          border-top-color: #539bf5; border-radius: 50%;
+          animation: spin 0.8s linear infinite;"></div>
+        <span style="color: #adbac7; font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 0.9rem; font-weight: 500;">Loading your data...</span>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      `;
+      document.body.appendChild(overlay);
+    }
+    overlay.style.display = show ? 'flex' : 'none';
   },
 
 

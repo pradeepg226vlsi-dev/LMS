@@ -53,6 +53,8 @@ const app = {
       }
     } else {
       this.showLoginScreen(true);
+      // Block login until data is loaded
+      this.showSyncLoader(true);
     }
 
     // 2. Fetch data
@@ -2519,6 +2521,11 @@ const app = {
   },
 
   async handleLogin() {
+    if (state.students.length === 0 && state.mentors.length === 0) {
+      this.showToast('System is still synchronizing with Google Sheets. Please wait...', 'warning');
+      return;
+    }
+
     const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
     const passwordInput = document.getElementById('login-password').value;
     

@@ -2567,6 +2567,7 @@ const app = {
         return;
       } else {
         this.showToast('Login failed: Password was incorrect. Please try again.', 'error');
+        alert('Login failed: Password was incorrect. Please try again.');
         return;
       }
     }
@@ -2596,12 +2597,14 @@ const app = {
         return;
       } else {
         this.showToast('Login failed: Password was incorrect. Please try again.', 'error');
+        alert('Login failed: Password was incorrect. Please try again.');
         return;
       }
     }
     
     // 5. Account not found at all
     this.showToast('Login failed: User account not found.', 'error');
+    alert('Login failed: User account not found.');
   },
 
   handleLogout() {

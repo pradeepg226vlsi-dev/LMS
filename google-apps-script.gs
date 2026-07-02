@@ -318,7 +318,7 @@ function logAction(ss, action, userId, details) {
 function getInitialData(ss) {
   var studentsSheet    = getOrCreateSheet(ss, "Students",    ['student_id', 'name', 'email', 'github_username', 'status', 'username', 'password']);
   var mentorsSheet     = getOrCreateSheet(ss, "Mentors",     ['mentor_id', 'name', 'email', 'status', 'username', 'password']);
-  var assignmentsSheet = getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
+  var assignmentsSheet = getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'instructions', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
   var submissionsSheet = getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback']);
   var attendanceSheet  = getOrCreateSheet(ss, "Attendance",  ['student_id', 'date', 'status']);
   var resourcesSheet   = getOrCreateSheet(ss, "Resources",   ['resource_id', 'title', 'type', 'url', 'created_date', 'shared_by']);
@@ -414,7 +414,7 @@ function getInitialData(ss) {
  * Returns assignments list.
  */
 function getAssignments(ss) {
-  var sheet = getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
+  var sheet = getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'instructions', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
   return getSheetDataAsObjects(sheet);
 }
 
@@ -446,7 +446,7 @@ function getLogs(ss) {
  * Action: createAssignment
  */
 function createAssignment(ss, params) {
-  var sheet = getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
+  var sheet = getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'instructions', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
   var assignments = getSheetDataAsObjects(sheet);
   
   var assignmentId = "A" + (1000 + assignments.length + 1);
@@ -471,6 +471,7 @@ function createAssignment(ss, params) {
     title: params.title || "Untitled Assignment",
     subject: params.subject || "General",
     description: params.description || "",
+    instructions: params.instructions || "",
     deadline: params.deadline || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     drive_file_name: fileName,
     drive_file_url: fileUrl,
@@ -479,7 +480,7 @@ function createAssignment(ss, params) {
     allow_late_submissions: params.allow_late_submissions || "false"
   };
   
-  appendObjectToSheet(sheet, ['assignment_id', 'title', 'subject', 'description', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions'], newAssignment);
+  appendObjectToSheet(sheet, ['assignment_id', 'title', 'subject', 'description', 'instructions', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions'], newAssignment);
   logAction(ss, "CREATE_ASSIGNMENT", params.creator_id || "Mentor", "Created assignment: " + newAssignment.title + " (" + assignmentId + ")");
   
   return newAssignment;
@@ -896,7 +897,7 @@ function setupDatabase() {
   // Create sheets and headers
   getOrCreateSheet(ss, "Students",    ['student_id', 'name', 'email', 'github_username', 'status', 'username', 'password']);
   getOrCreateSheet(ss, "Mentors",     ['mentor_id', 'name', 'email', 'status', 'username', 'password']);
-  getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
+  getOrCreateSheet(ss, "Assignments", ['assignment_id', 'title', 'subject', 'description', 'instructions', 'deadline', 'drive_file_name', 'drive_file_url', 'created_date', 'status', 'allow_late_submissions']);
   getOrCreateSheet(ss, "Submissions", ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback']);
   getOrCreateSheet(ss, "Attendance",  ['student_id', 'date', 'status']);
   getOrCreateSheet(ss, "Resources",   ['resource_id', 'title', 'type', 'url', 'created_date', 'shared_by']);

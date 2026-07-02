@@ -28,7 +28,6 @@ const app = {
   
   async init() {
     this.setupEventListeners();
-    this.updateConnectionBadge();
     
     // 1. Restore session immediately before sync to avoid login screen flashing
     const session = localStorage.getItem('ag_lms_session');
@@ -93,14 +92,7 @@ const app = {
     this.showToast('LMS Platform initialized successfully!', 'success');
   },
 
-  updateConnectionBadge() {
-    const badge = document.getElementById('connection-status-pill');
-    const text = document.getElementById('connection-status-text');
-    if (badge) {
-      badge.classList.add('connected');
-      text.textContent = 'Live Sheets Connected';
-    }
-  },
+
 
   // Data Syncing — always fetches from live Google Sheets API
   async syncData() {
@@ -1543,15 +1535,9 @@ const app = {
     let todoCount = 0;
     
     activeAssignments.forEach(assign => {
-      const isDeadlinePassed = new Date() > new Date(assign.deadline);
-      const isLateAllowed = (assign.allow_late_submissions === 'true' || assign.allow_late_submissions === true);
-      const isLocked = isDeadlinePassed && !isLateAllowed;
-
       const sub = mySubmissions.find(s => s.assignment_id === assign.assignment_id);
-      if (!isLocked) {
-        if (!sub || sub.status === 'Resubmission Requested') {
-          todoCount++;
-        }
+      if (!sub || sub.status === 'Resubmission Requested') {
+        todoCount++;
       }
     });
 

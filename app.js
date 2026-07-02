@@ -29,39 +29,65 @@ const app = {
   async init() {
     this.setupEventListeners();
     this.updateConnectionBadge();
-    await this.syncData();
-    this.populateStudentSelector();
     
-    // Auth Session Initialization
+    // 1. Restore session immediately before sync to avoid login screen flashing
     const session = localStorage.getItem('ag_lms_session');
+    let hasValidSession = false;
+    
     if (session) {
+      state.isAuthenticated = true;
       if (session === 'mentor') {
-        state.isAuthenticated = true;
         state.currentRole = 'mentor';
         this.updateProfileUI('Mentor', 'Instructor');
         this.switchRole('mentor');
         this.showLoginScreen(false);
+        hasValidSession = true;
       } else {
-        const student = state.students.find(s => s.student_id === session);
-        if (student) {
-          if (student.status === 'Suspended') {
-            localStorage.removeItem('ag_lms_session');
-            this.showToast('Your account has been suspended.', 'error');
-            this.showLoginScreen(true);
-          } else {
-            state.isAuthenticated = true;
-            state.currentRole = session;
-            const initials = student.name.substring(0, 2);
-            this.updateProfileUI(student.name, 'Learner', initials);
-            this.switchRole(session);
-            this.showLoginScreen(false);
-          }
-        } else {
-          this.showLoginScreen(true);
-        }
+        // Temporary student profile until sync finishes
+        state.currentRole = session;
+        this.updateProfileUI('Student', 'Learner', 'S');
+        this.switchRole(session);
+        this.showLoginScreen(false);
+        hasValidSession = true;
       }
     } else {
       this.showLoginScreen(true);
+    }
+
+    // 2. Fetch data in background/async
+    try {
+      await this.syncData();
+      this.populateStudentSelector();
+      
+      // 3. Post-sync session check & detail refinement
+      if (hasValidSession) {
+        if (session === 'mentor') {
+          // Refresh Mentor View
+          this.showView('mentor-dashboard');
+        } else {
+          // Verify student status
+          const student = state.students.find(s => s.student_id === session);
+          if (student) {
+            if (student.status === 'Suspended') {
+              localStorage.removeItem('ag_lms_session');
+              this.showToast('Your account has been suspended.', 'error');
+              this.showLoginScreen(true);
+            } else {
+              const initials = student.name.substring(0, 2);
+              this.updateProfileUI(student.name, 'Learner', initials);
+              // Refresh views to display fetched data
+              this.switchRole(session);
+            }
+          } else if (state.students.length > 0) {
+            // Data successfully fetched, but student is NOT in the database (deleted)
+            localStorage.removeItem('ag_lms_session');
+            this.showToast('Session expired or student profile not found.', 'warning');
+            this.showLoginScreen(true);
+          }
+        }
+      }
+    } catch (startupError) {
+      console.error('LMS Startup Sync Error:', startupError);
     }
     
     this.showToast('LMS Platform initialized successfully!', 'success');

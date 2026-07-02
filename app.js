@@ -2060,7 +2060,9 @@ const app = {
         repo_url: repo,
         commit_hash: commit,
         apps_script_url: state.apiUrl,
-        student_comments: comments
+        student_comments: comments,
+        assignment_description: task.description || "",
+        assignment_instructions: task.instructions || ""
       };
 
       // Fire and forget or background fetch request

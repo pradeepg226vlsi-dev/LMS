@@ -86,7 +86,7 @@ const app = {
     this.showToast('Syncing with Google Sheets...', 'info');
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      const timeoutId = setTimeout(() => controller.abort(), 40000);
       
       // Must use POST — Google Apps Script strips GET query params on redirect
       const response = await fetch(state.apiUrl, {

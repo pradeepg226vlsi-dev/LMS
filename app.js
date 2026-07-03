@@ -1882,9 +1882,9 @@ const app = {
           actionBtnClass = 'btn-secondary';
         } else if (sub.status === 'Reviewed') {
           statusBadgeHtml = `<span class="card-badge status-reviewed">Reviewed (Grade: ${sub.marks}%)</span>`;
-          actionBtnText = 'Submission Locked';
+          actionBtnText = 'View Submission';
           actionBtnClass = 'btn-secondary';
-          isReviewed = true;
+          isReviewed = false; // Do not disable button, let them click to view!
         } else if (sub.status === 'Resubmission Requested') {
           statusBadgeHtml = `<span class="card-badge status-closed" style="background: hsla(0, 84%, 60%, 0.15); color: var(--color-danger);">Resubmission Required</span>`;
           actionBtnText = 'Submit Fixes';
@@ -1914,13 +1914,22 @@ const app = {
         }
       } else if (isDeadlinePassed && !isLateAllowed) {
         // Deadline passed, no late allowed
-        isReviewed = true;
-        actionBtnText = 'Locked (Deadline Passed)';
-        actionBtnClass = 'btn-secondary';
-        if (!sub) {
+        if (sub) {
+          isReviewed = false; // Keep button enabled to view their submission
+          actionBtnText = 'View Submission';
+          actionBtnClass = 'btn-secondary';
+          if (sub.status === 'Reviewed') {
+            statusBadgeHtml = `<span class="card-badge status-reviewed">Reviewed (${sub.marks}%)</span>`;
+          } else if (sub.status === 'Resubmission Requested') {
+            statusBadgeHtml = `<span class="card-badge status-closed" style="background: rgba(239, 68, 68, 0.12); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2);">Closed (Expired)</span>`;
+          } else {
+            statusBadgeHtml = `<span class="card-badge status-submitted">Awaiting Review</span>`;
+          }
+        } else {
+          isReviewed = true;
+          actionBtnText = 'Locked (Deadline Passed)';
+          actionBtnClass = 'btn-secondary';
           statusBadgeHtml = `<span class="card-badge status-closed" style="background: rgba(239, 68, 68, 0.12); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2);">Deadline Passed</span>`;
-        } else if (sub.status === 'Resubmission Requested') {
-          statusBadgeHtml = `<span class="card-badge status-closed" style="background: rgba(239, 68, 68, 0.12); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2);">Closed (Expired)</span>`;
         }
       } else if (isDeadlinePassed && isLateAllowed && !isReviewed) {
         // Overdue but late submission is allowed
@@ -1996,30 +2005,25 @@ const app = {
   openSubmitPanel(assignmentId) {
     const studentId = state.currentRole;
     const sub = state.submissions.find(s => s.assignment_id === assignmentId && s.student_id === studentId);
-    if (sub && sub.status === 'Reviewed') {
-      this.showToast('This submission is locked and reviewed. Resubmission is not permitted.', 'warning');
-      return;
-    }
-
     const task = state.assignments.find(a => a.assignment_id === assignmentId);
     if (!task) return;
-
+ 
     const isDeadlinePassed = new Date() > new Date(task.deadline);
     const isLateAllowed = String(task.allow_late_submissions).toLowerCase() === 'true';
-
+ 
     // If closed with NO submission — block entirely
     if (task.status === 'Closed' && !sub) {
       this.showToast('This assignment has been closed by the mentor. Submissions are no longer accepted.', 'error');
       return;
     }
-
-    // If deadline passed and late not allowed (and not closed-with-submission case)
-    if (task.status !== 'Closed' && isDeadlinePassed && !isLateAllowed) {
+ 
+    // If deadline passed and late not allowed (and not submitted case)
+    if (task.status !== 'Closed' && isDeadlinePassed && !isLateAllowed && !sub) {
       this.showToast('The deadline has passed and late submissions are not allowed.', 'warning');
       return;
     }
-
-    const isViewOnly = task.status === 'Closed' && !!sub;
+ 
+    const isViewOnly = (task.status === 'Closed' && !!sub) || (sub && sub.status === 'Reviewed') || (isDeadlinePassed && !isLateAllowed && !!sub);
 
     this.showView('student-submit-pane');
     
@@ -2044,7 +2048,13 @@ const app = {
     if (isViewOnly) {
       inputs.forEach(id => { const el = document.getElementById(id); if (el) el.setAttribute('readonly', 'true'); });
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Assignment Closed — View Only';
+      if (sub && sub.status === 'Reviewed') {
+        submitBtn.textContent = 'Submission Reviewed — View Only';
+      } else if (task.status === 'Closed') {
+        submitBtn.textContent = 'Assignment Closed — View Only';
+      } else {
+        submitBtn.textContent = 'Deadline Passed — View Only';
+      }
       submitBtn.style.opacity = '0.55';
       submitBtn.style.cursor = 'not-allowed';
     } else {

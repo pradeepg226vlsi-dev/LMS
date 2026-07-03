@@ -167,18 +167,37 @@ async def grade_commit(req: GradeRequest):
                 
                 user_prompt += f"Code Files Content:\n{code_context}"
                 
-                logger.info("Requesting evaluation from Qwen LLM...")
-                response = client.chat.completions.create(
-                    model="Qwen/Qwen2.5-Coder-7B-Instruct",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_prompt}
-                    ],
-                    max_tokens=400
-                )
+                import time
+                import random
                 
-                ai_feedback = response.choices[0].message.content.strip()
-                logger.info(f"AI response received: {ai_feedback}")
+                max_retries = 5
+                backoff_factor = 2
+                ai_feedback = ""
+                
+                for attempt in range(max_retries):
+                    try:
+                        logger.info(f"Requesting evaluation from Qwen LLM (Attempt {attempt + 1}/{max_retries})...")
+                        response = client.chat.completions.create(
+                            model="Qwen/Qwen2.5-Coder-7B-Instruct",
+                            messages=[
+                                {"role": "system", "content": system_prompt},
+                                {"role": "user", "content": user_prompt}
+                            ],
+                            max_tokens=400
+                        )
+                        ai_feedback = response.choices[0].message.content.strip()
+                        logger.info(f"AI response received: {ai_feedback}")
+                        break
+                    except Exception as llm_err:
+                        err_msg = str(llm_err).lower()
+                        is_rate_limit = "429" in err_msg or "rate limit" in err_msg or "too many requests" in err_msg
+                        
+                        if is_rate_limit and attempt < max_retries - 1:
+                            sleep_time = (backoff_factor ** attempt) + (random.random() * 2)
+                            logger.warning(f"Rate limited (429) by Hugging Face. Retrying in {sleep_time:.2f} seconds...")
+                            time.sleep(sleep_time)
+                        else:
+                            raise llm_err
                 
                 # Sanitize score and feedback in ai_feedback to strictly follow [Score]/100 | [Feedback]
                 try:

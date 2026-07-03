@@ -48,6 +48,20 @@ async def run_grading_workflow(req: GradeRequest):
     async with grading_lock:
         logger.info(f"Starting autograde sequence for student {req.student_id}, commit {req.commit_hash}")
         
+        # Update Google Sheets status to 'Processing Code...' to reflect that evaluation has started
+        try:
+            start_payload = {
+                "action": "autogradingCallback",
+                "student_id": req.student_id,
+                "commit_hash": req.commit_hash,
+                "status": "Processing Code...",
+                "grading_output": "AI Autograder is compiling and evaluating your Verilog modules...",
+                "compiler_logs": ""
+            }
+            requests.post(req.apps_script_url, json=start_payload, headers={"Content-Type": "text/plain"})
+        except Exception as start_err:
+            logger.error(f"Failed to post intermediate processing status: {str(start_err)}")
+        
         target_dir = f"repo_{req.student_id}"
         verilator_logs = ""
         verilator_success = False
@@ -240,7 +254,7 @@ async def run_grading_workflow(req: GradeRequest):
             "action": "autogradingCallback",
             "student_id": req.student_id,
             "commit_hash": req.commit_hash,
-            "status": status,
+            "status": "Reviewed",
             "grading_output": ai_feedback,
             "compiler_logs": verilator_logs[:1000] # send first 1000 characters
         }

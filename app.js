@@ -1880,6 +1880,16 @@ const app = {
           statusBadgeHtml = `<span class="card-badge status-submitted">Awaiting Review</span>`;
           actionBtnText = 'Update Submission';
           actionBtnClass = 'btn-secondary';
+        } else if (sub.status === 'Processing Code...') {
+          statusBadgeHtml = `<span class="card-badge" style="background: rgba(59, 130, 246, 0.12); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.25);">Evaluating Code...</span>`;
+          actionBtnText = 'Evaluating...';
+          actionBtnClass = 'btn-secondary';
+          isReviewed = true; // Disable button while autograding
+        } else if (sub.status === 'Queued' || sub.status === 'Queued for Autograding') {
+          statusBadgeHtml = `<span class="card-badge" style="background: rgba(107, 114, 128, 0.12); color: #6b7280; border: 1px solid rgba(107, 114, 128, 0.25);">Queued for AI</span>`;
+          actionBtnText = 'Queued...';
+          actionBtnClass = 'btn-secondary';
+          isReviewed = true; // Disable button while queued
         } else if (sub.status === 'Reviewed') {
           statusBadgeHtml = `<span class="card-badge status-reviewed">Reviewed (Grade: ${sub.marks}%)</span>`;
           actionBtnText = 'View Submission';

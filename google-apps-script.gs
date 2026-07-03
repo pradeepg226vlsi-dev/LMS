@@ -1006,7 +1006,8 @@ function autogradingCallback(ss, params) {
     
     // Write values back to spreadsheet cells
     if (statusIdx !== -1) {
-      sheet.getRange(foundRowIndex, statusIdx + 1).setValue("Reviewed");
+      var nextStatus = params.status || "Reviewed";
+      sheet.getRange(foundRowIndex, statusIdx + 1).setValue(nextStatus);
     }
     if (marksIdx !== -1) {
       sheet.getRange(foundRowIndex, marksIdx + 1).setValue(marksPercentage);

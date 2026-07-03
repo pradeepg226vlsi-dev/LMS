@@ -5,7 +5,7 @@
  */
 
 // Deployed Google Apps Script Web App URL
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw43vwrzqGHsXrSLr35CBRwipjvLdThw4_jAlyBG0KuAanumsnlX2l3Iqp-Fawchqk/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLb8Da4vn3NFKUJ6301oKGFB7Vx6RYLFUcDNrcEvEj85DechRyx-2q7LdiEM5m/exec';
 
 
 // Application State

@@ -4,7 +4,7 @@ import asyncio
 import subprocess
 import glob
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import requests
@@ -43,8 +43,7 @@ class GradeRequest(BaseModel):
 def read_root():
     return {"status": "online", "engine": "Verilator + Qwen2.5-Coder Evaluation Engine"}
 
-@app.post("/grade-commit")
-async def grade_commit(req: GradeRequest):
+async def run_grading_workflow(req: GradeRequest):
     # Acquire the lock to run evaluations sequentially
     async with grading_lock:
         logger.info(f"Starting autograde sequence for student {req.student_id}, commit {req.commit_hash}")
@@ -99,19 +98,16 @@ async def grade_commit(req: GradeRequest):
                 if len(verilator_logs) > 5000:
                     verilator_logs = verilator_logs[:5000] + "\n... [truncated]"
                 
-                # 5. AI Grading evaluation (run in all cases to provide marks and feedback even if compilation fails)
-                status = "Reviewed"
-                
-                # Read code contents of discovered files for LLM prompt context
-                code_contents = []
-                for fpath in hw_files:
+                # Read all file contents to supply as LLM prompt context
+                code_context = ""
+                for file_path in hw_files:
                     try:
-                        with open(fpath, "r", encoding="utf-8", errors="ignore") as f:
-                            code_contents.append(f"// FILE: {os.path.basename(fpath)}\n" + f.read())
-                    except Exception as e:
-                        logger.error(f"Error reading file {fpath}: {str(e)}")
-                
-                code_context = "\n\n".join(code_contents)
+                        with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                            code_context += f"\n--- File: {os.path.basename(file_path)} ---\n"
+                            code_context += f.read()
+                    except Exception as read_err:
+                        logger.error(f"Could not read {file_path}: {str(read_err)}")
+                        
                 if len(code_context) > 12000:
                     code_context = code_context[:12000] + "\n... [truncated]"
                 
@@ -215,7 +211,7 @@ async def grade_commit(req: GradeRequest):
                         clean_lines = []
                         for line in lines:
                             if re.search(r"\d+/(100|10)", line) and ("score" in line.lower() or "grade" in line.lower() or "deduction" in line.lower()):
-                                continue
+                                  continue
                             clean_lines.append(line)
                         
                         feedback_text = " ".join(clean_lines)
@@ -228,15 +224,13 @@ async def grade_commit(req: GradeRequest):
         except subprocess.CalledProcessError as git_err:
             logger.error(f"Git check/checkout failed: {str(git_err)}")
             status = "ERROR"
-            ai_feedback = "0/10 | Git operation failed. Ensure the repo is public and the commit hash is correct."
+            ai_feedback = "0/100 | Git operation failed. Ensure the repo is public and the commit hash is correct."
             verilator_logs = f"Git error occurred."
         except Exception as err:
             logger.error(f"System evaluation error: {str(err)}")
             status = "ERROR"
-            ai_feedback = f"0/10 | Autograding pipeline error: {str(err)}"
-            verilator_logs = f"Error trace: {str(err)}"
+            ai_feedback = f"0/100 | Autograding pipeline error: {str(err)}"
         finally:
-            # 6. Post-evaluation clean up to keep container storage at zero
             logger.info("Cleaning up workspace storage...")
             if os.path.exists(target_dir):
                 shutil.rmtree(target_dir)
@@ -257,10 +251,12 @@ async def grade_commit(req: GradeRequest):
             logger.info(f"Callback status: {res.status_code}, Response: {res.text}")
         except Exception as cb_err:
             logger.error(f"Failed to post callback to Google Sheets backend: {str(cb_err)}")
-            
-        return {
-            "success": True,
-            "student_id": req.student_id,
-            "status": status,
-            "score_feedback": ai_feedback
-        }
+
+@app.post("/grade-commit")
+async def grade_commit(req: GradeRequest, background_tasks: BackgroundTasks):
+    logger.info(f"Received grade request for {req.student_id}. Enqueueing task in background.")
+    background_tasks.add_task(run_grading_workflow, req)
+    return {
+        "success": True,
+        "message": "Evaluation successfully queued. The grading status will update shortly on your dashboard."
+    }

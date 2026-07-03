@@ -236,16 +236,28 @@ const app = {
       });
     }
 
-    // Auto-cap grading marks input field to 0-100 in UI
+    // Validate grading marks input field and display error message in UI
     const gradeMarksInput = document.getElementById('grade-marks');
+    const gradeMarksError = document.getElementById('grade-marks-error');
     if (gradeMarksInput) {
       gradeMarksInput.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value);
-        if (isNaN(val)) return;
+        if (isNaN(val)) {
+          if (gradeMarksError) gradeMarksError.style.display = 'none';
+          return;
+        }
         if (val > 100) {
-          e.target.value = 100;
+          if (gradeMarksError) {
+            gradeMarksError.style.display = 'block';
+            gradeMarksError.textContent = 'Marks cannot exceed 100';
+          }
         } else if (val < 0) {
-          e.target.value = 0;
+          if (gradeMarksError) {
+            gradeMarksError.style.display = 'block';
+            gradeMarksError.textContent = 'Marks cannot be less than 0';
+          }
+        } else {
+          if (gradeMarksError) gradeMarksError.style.display = 'none';
         }
       });
     }
@@ -1055,6 +1067,10 @@ const app = {
     document.getElementById('grade-marks').value = sub.marks || '';
     document.getElementById('grade-status').value = sub.status === 'Resubmission Requested' ? 'Resubmission Requested' : 'Reviewed';
     document.getElementById('grade-feedback').value = sub.feedback || '';
+
+    // Clear any previous error message
+    const gradeMarksError = document.getElementById('grade-marks-error');
+    if (gradeMarksError) gradeMarksError.style.display = 'none';
   },
 
   // Action: Create Assignment
@@ -1137,15 +1153,25 @@ const app = {
     const feedback = document.getElementById('grade-feedback').value;
 
     // Validate marks does not exceed 100 or remain empty
+    const gradeMarksError = document.getElementById('grade-marks-error');
     if (marks === null || marks === undefined || marks.trim() === '') {
       this.showToast('Marks are required to grade the submission.', 'error');
+      if (gradeMarksError) {
+        gradeMarksError.style.display = 'block';
+        gradeMarksError.textContent = 'Marks are required';
+      }
       return;
     }
     const marksNum = Number(marks);
     if (isNaN(marksNum) || marksNum < 0 || marksNum > 100) {
       this.showToast('Marks must be between 0 and 100.', 'error');
+      if (gradeMarksError) {
+        gradeMarksError.style.display = 'block';
+        gradeMarksError.textContent = marksNum > 100 ? 'Marks cannot exceed 100' : 'Marks cannot be less than 0';
+      }
       return;
     }
+    if (gradeMarksError) gradeMarksError.style.display = 'none';
     
     const submitBtn = document.getElementById('submit-grade-btn');
     submitBtn.disabled = true;

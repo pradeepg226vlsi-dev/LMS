@@ -983,14 +983,14 @@ function autogradingCallback(ss, params) {
     
     var parts = rawOutput.split("|");
     if (parts.length >= 2) {
-      var scorePart = parts[0].trim(); // "[Score]/100" or "[Score]/10"
       feedbackText = parts.slice(1).join("|").trim();
-      
-      var scoreMatch = scorePart.match(/(\d+)\/(100|10)/);
-      if (scoreMatch) {
-        score = parseInt(scoreMatch[1], 10);
-        maxScore = parseInt(scoreMatch[2], 10);
-      }
+    }
+    
+    // Parse score from the raw output string (supporting lists or standard formats)
+    var scoreMatch = rawOutput.match(/(\d+)\/(100|10)/);
+    if (scoreMatch) {
+      score = parseInt(scoreMatch[1], 10);
+      maxScore = parseInt(scoreMatch[2], 10);
     }
     
     // Map score to /100 percentage for the LMS dashboard grade compatibility

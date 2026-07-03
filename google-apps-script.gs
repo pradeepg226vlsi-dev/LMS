@@ -951,6 +951,7 @@ function autogradingCallback(ss, params) {
     var statusIdx = headers.indexOf("status");
     var marksIdx = headers.indexOf("marks");
     var feedbackIdx = headers.indexOf("feedback");
+    var verilatorLogsIdx = headers.indexOf("verilator_logs");
     
     if (studentIdIdx === -1 || commitHashIdx === -1) {
       throw new Error("Required sheet columns are missing from Submissions schema");
@@ -998,11 +999,7 @@ function autogradingCallback(ss, params) {
     marksPercentage = Math.min(100, Math.max(0, marksPercentage));
     
     // Compile complete feedback report including Verilator syntax messages
-    var compilerReport = "";
-    if (params.compiler_logs) {
-      compilerReport = "\n\n----------------------------------------\n[VERILATOR COMPILER OUTPUT]\n" + params.compiler_logs;
-    }
-    var fullFeedback = feedbackText + compilerReport;
+    var fullFeedback = feedbackText;
     
     // Write values back to spreadsheet cells
     if (statusIdx !== -1) {
@@ -1014,6 +1011,9 @@ function autogradingCallback(ss, params) {
     }
     if (feedbackIdx !== -1) {
       sheet.getRange(foundRowIndex, feedbackIdx + 1).setValue(fullFeedback);
+    }
+    if (verilatorLogsIdx !== -1 && params.compiler_logs) {
+      sheet.getRange(foundRowIndex, verilatorLogsIdx + 1).setValue(params.compiler_logs);
     }
     
     logAction(ss, "AUTOGRADER_CALLBACK", "System", "Graded student " + studentId + " | Score: " + marksPercentage + "%");

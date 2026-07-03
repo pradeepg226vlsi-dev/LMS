@@ -2105,6 +2105,7 @@ const app = {
       this.showToast('Code registered. Triggering Hugging Face Autograder...', 'info');
 
       // 2. Dispatch to Hugging Face Autograder Space
+      const isLate = new Date() > new Date(task.deadline);
       const hfAutograderUrl = "https://vlsi-autograder-antigravity-lms-grader.hf.space/grade-commit";
       const autograderPayload = {
         student_id: studentId,
@@ -2112,8 +2113,10 @@ const app = {
         commit_hash: commit,
         apps_script_url: state.apiUrl,
         student_comments: comments,
+        assignment_title: task.title || "",
         assignment_description: task.description || "",
-        assignment_instructions: task.instructions || ""
+        assignment_instructions: task.instructions || "",
+        is_late: isLate
       };
 
       // Fire and forget or background fetch request

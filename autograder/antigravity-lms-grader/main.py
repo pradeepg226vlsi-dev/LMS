@@ -34,8 +34,10 @@ class GradeRequest(BaseModel):
     commit_hash: str
     apps_script_url: str
     student_comments: str = ""
+    assignment_title: str = ""
     assignment_description: str = ""
     assignment_instructions: str = ""
+    is_late: bool = False
 
 @app.get("/")
 def read_root():
@@ -144,12 +146,19 @@ async def grade_commit(req: GradeRequest):
                 )
                 
                 user_prompt = f"Submitter ID: {req.student_id}\n"
+                if req.assignment_title:
+                    user_prompt += f"Assignment Title: {req.assignment_title}\n\n"
                 if req.assignment_description:
                     user_prompt += f"Assignment Question / Goal:\n{req.assignment_description}\n\n"
                 if req.assignment_instructions:
                     user_prompt += f"Assignment Reference Instructions:\n{req.assignment_instructions}\n\n"
                 if req.student_comments:
                     user_prompt += f"Student Notes / Implementation Description:\n{req.student_comments}\n\n"
+                
+                # Add late submission context
+                user_prompt += f"Submission Time Status: {'LATE SUBMISSION' if req.is_late else 'ON-TIME SUBMISSION'}\n"
+                if req.is_late:
+                    user_prompt += "Note: This is a late submission. Apply a deduction of 10 marks (10% penalty) to the final grade score out of 100 for lateness, but still evaluate the code's structural logic, readability, correctness, and optimization fairly.\n\n"
                 
                 # Add compilation info to prompt
                 user_prompt += f"Verilator Compilation Status: {'PASSED' if verilator_success else 'FAILED'}\n"

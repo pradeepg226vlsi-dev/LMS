@@ -120,7 +120,7 @@ async def grade_commit(req: GradeRequest):
                 if not hf_token:
                     raise ValueError("HF_TOKEN secret is missing in the environment.")
                     
-                client = InferenceClient(provider="hf-inference", token=hf_token)
+                client = InferenceClient(token=hf_token)
                 
                 system_prompt = (
                     "You are an expert hardware design engineering professor. Evaluate the following Verilog/SystemVerilog "

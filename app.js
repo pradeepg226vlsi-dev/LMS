@@ -1064,7 +1064,7 @@ const app = {
     }
 
     document.getElementById('grade-submission-id').value = sub.submission_id;
-    document.getElementById('grade-marks').value = sub.marks || '';
+    document.getElementById('grade-marks').value = (sub.marks !== undefined && sub.marks !== null && sub.marks !== "") ? sub.marks : '';
     document.getElementById('grade-status').value = sub.status === 'Resubmission Requested' ? 'Resubmission Requested' : 'Reviewed';
     document.getElementById('grade-feedback').value = sub.feedback || '';
 

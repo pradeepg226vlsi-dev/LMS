@@ -138,7 +138,7 @@ async def grade_commit(req: GradeRequest):
                     "feel free to assign a high score (even up to 100/100 if perfect) and constructively comment on any syntax issues or how to integrate it.\n"
                     "If the compilation failed due to actual syntax or logical errors inside the code itself, assign a reflective partial/failing score (e.g. 10-40 out of 100) and explain how to fix it.\n"
                     "Ensure the score correctly reflects the quality of the logic, formatting, and optimization.\n"
-                    "Keep your remarks clear, constructive, and concise (max 3-4 sentences). Do not write a long essay.\n"
+                    "Provide your feedback in less than 100 words. Keep it simple, clear, constructive, and in a natural, understandable human-like tone. Do not write a long essay.\n"
                     "Your output must follow this format strictly:\n"
                     "[Score]/100 | [Feedback]\n"
                     "Example:\n"
@@ -170,7 +170,7 @@ async def grade_commit(req: GradeRequest):
                 import time
                 import random
                 
-                max_retries = 5
+                max_retries = 10
                 backoff_factor = 2
                 ai_feedback = ""
                 

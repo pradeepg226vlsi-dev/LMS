@@ -1907,7 +1907,7 @@ const app = {
           }
         } else {
           // No submission — just show closed, no button
-          statusBadgeHtml = `<span class="card-badge status-closed" style="background: rgba(239, 68, 68, 0.12); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2);">Assignment Closed</span>`;
+          statusBadgeHtml = `<span class="card-badge status-closed" style="background: rgba(239, 68, 68, 0.12); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2);">Missed</span>`;
           actionBtnText = 'Assignment Closed';
           actionBtnClass = 'btn-secondary';
           isReviewed = true; // Disable button
@@ -1929,7 +1929,7 @@ const app = {
           isReviewed = true;
           actionBtnText = 'Locked (Deadline Passed)';
           actionBtnClass = 'btn-secondary';
-          statusBadgeHtml = `<span class="card-badge status-closed" style="background: rgba(239, 68, 68, 0.12); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2);">Deadline Passed</span>`;
+          statusBadgeHtml = `<span class="card-badge status-closed" style="background: rgba(239, 68, 68, 0.12); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2);">Missed</span>`;
         }
       } else if (isDeadlinePassed && isLateAllowed && !isReviewed) {
         // Overdue but late submission is allowed

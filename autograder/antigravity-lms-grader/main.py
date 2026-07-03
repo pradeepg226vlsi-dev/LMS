@@ -167,6 +167,25 @@ async def grade_commit(req: GradeRequest):
                 
                 ai_feedback = response.choices[0].message.content.strip()
                 logger.info(f"AI response received: {ai_feedback}")
+                
+                # Sanitize score in ai_feedback to not cross 100
+                try:
+                    parts = ai_feedback.split("|", 1)
+                    if len(parts) >= 2:
+                        score_part = parts[0].strip()
+                        feedback_part = parts[1].strip()
+                        import re
+                        match = re.search(r"(\d+)/(100|10)", score_part)
+                        if match:
+                            score_val = int(match.group(1))
+                            max_val = int(match.group(2))
+                            if max_val == 10:
+                                score_val = score_val * 10
+                            # Clamp between 0 and 100
+                            score_val = min(100, max(0, score_val))
+                            ai_feedback = f"{score_val}/100 | {feedback_part}"
+                except Exception as parse_err:
+                    logger.error(f"Error sanitizing AI feedback score: {str(parse_err)}")
                     
         except subprocess.CalledProcessError as git_err:
             logger.error(f"Git check/checkout failed: {str(git_err)}")

@@ -236,6 +236,20 @@ const app = {
       });
     }
 
+    // Auto-cap grading marks input field to 0-100 in UI
+    const gradeMarksInput = document.getElementById('grade-marks');
+    if (gradeMarksInput) {
+      gradeMarksInput.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        if (isNaN(val)) return;
+        if (val > 100) {
+          e.target.value = 100;
+        } else if (val < 0) {
+          e.target.value = 0;
+        }
+      });
+    }
+
     // Student Attendance Modal Toggle
     const attendanceCard = document.getElementById('student-attendance-card');
     if (attendanceCard) {
@@ -634,7 +648,7 @@ const app = {
     let classAverage = "-";
     if (gradedSubmissions.length > 0) {
       const sum = gradedSubmissions.reduce((acc, curr) => acc + Number(curr.marks), 0);
-      classAverage = Math.round(sum / gradedSubmissions.length) + "%";
+      classAverage = Math.min(100, Math.round(sum / gradedSubmissions.length)) + "%";
     }
 
     // Update layout elements
@@ -1121,6 +1135,17 @@ const app = {
     const marks = document.getElementById('grade-marks').value;
     const status = document.getElementById('grade-status').value;
     const feedback = document.getElementById('grade-feedback').value;
+
+    // Validate marks does not exceed 100 or remain empty
+    if (marks === null || marks === undefined || marks.trim() === '') {
+      this.showToast('Marks are required to grade the submission.', 'error');
+      return;
+    }
+    const marksNum = Number(marks);
+    if (isNaN(marksNum) || marksNum < 0 || marksNum > 100) {
+      this.showToast('Marks must be between 0 and 100.', 'error');
+      return;
+    }
     
     const submitBtn = document.getElementById('submit-grade-btn');
     submitBtn.disabled = true;
@@ -1631,7 +1656,7 @@ const app = {
     
     if (gradedSubmissions.length > 0) {
       const sum = gradedSubmissions.reduce((acc, curr) => acc + Number(curr.marks), 0);
-      averageGrade = Math.round(sum / gradedSubmissions.length);
+      averageGrade = Math.min(100, Math.round(sum / gradedSubmissions.length));
     }
 
     // Animate Average Grade Circle Ring

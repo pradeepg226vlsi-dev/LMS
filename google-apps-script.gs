@@ -581,6 +581,11 @@ function reviewSubmission(ss, params) {
     throw new Error("Missing parameter: submission_id is required.");
   }
   
+  var marksNum = Number(marks);
+  if (isNaN(marksNum) || marksNum < 0 || marksNum > 100) {
+    throw new Error("Marks must be between 0 and 100.");
+  }
+  
   var submissionHeaders = ['submission_id', 'assignment_id', 'student_id', 'student_name', 'repo_link', 'commit_hash', 'commit_url', 'submitted_time', 'status', 'marks', 'feedback', 'student_comments'];
   
   // Update submission status in main Submissions sheet
@@ -970,24 +975,27 @@ function autogradingCallback(ss, params) {
       throw new Error("No matching placeholder submission found for student: " + studentId + " and commit: " + commitHash);
     }
     
-    // Parse Qwen grading feedback format "[Score]/10 | [Feedback]"
-    var rawOutput = params.grading_output || "0/10 | No feedback received.";
+    // Parse Qwen grading feedback format "[Score]/100 | [Feedback]" or "[Score]/10 | [Feedback]"
+    var rawOutput = params.grading_output || "0/100 | No feedback received.";
     var score = 0;
+    var maxScore = 100;
     var feedbackText = rawOutput;
     
     var parts = rawOutput.split("|");
     if (parts.length >= 2) {
-      var scorePart = parts[0].trim(); // "[Score]/10"
+      var scorePart = parts[0].trim(); // "[Score]/100" or "[Score]/10"
       feedbackText = parts.slice(1).join("|").trim();
       
-      var scoreMatch = scorePart.match(/(\d+)\/10/);
+      var scoreMatch = scorePart.match(/(\d+)\/(100|10)/);
       if (scoreMatch) {
         score = parseInt(scoreMatch[1], 10);
+        maxScore = parseInt(scoreMatch[2], 10);
       }
     }
     
-    // Map score from /10 to /100 percentage for the LMS dashboard grade compatibility
-    var marksPercentage = score * 10;
+    // Map score to /100 percentage for the LMS dashboard grade compatibility
+    var marksPercentage = maxScore === 10 ? score * 10 : score;
+    marksPercentage = Math.min(100, Math.max(0, marksPercentage));
     
     // Compile complete feedback report including Verilator syntax messages
     var compilerReport = "";
